@@ -185,6 +185,7 @@ def historical_weather_load(end_date, date_format="%Y-%m-%d %H:%M:%S", path="./D
 
     return hist_metadata_dict, hist_weather_dict
 
+
 def historical_weather_transformations(weather_dict, window_width = 2, date_format="%Y-%m-%d %H:%M:%S"):
     
     """
@@ -206,7 +207,8 @@ def historical_weather_transformations(weather_dict, window_width = 2, date_form
         df_weather = weather_dict[station].copy()
         
         # Removing columns that are not needed
-        df_weather.drop(columns = ['Horizontal visibility', 'Present weather (auto)', 'Wind direction'],
+        df_weather.drop(columns = ['Horizontal visibility', 'Present weather (auto)', 
+                                   'Wind direction', 'Dew-point temperature', 'Precipitation intensity',],
                         inplace=True, errors='ignore')
         
         # unify nan coding
@@ -225,11 +227,19 @@ def historical_weather_transformations(weather_dict, window_width = 2, date_form
         df_weather_rolled.loc[:,'cal_month'] = df_weather_rolled['date'].dt.month
         df_weather_rolled.loc[:,'cal_day'] = df_weather_rolled['date'].dt.day
         df_weather_rolled.loc[:,'cal_hour'] = df_weather_rolled['date'].dt.hour
+        df_weather_rolled.columns = ['date', 'Temperature', 'Cloud Cover', 'Wind Gust',
+                                     'Precipitation', 'Sea Level Pressure','Relative Humidity',
+                                     'Snow Depth', 'Wind Speed', 'cal_year',
+                                     'cal_month', 'cal_day','cal_hour']
+        
+        # parameters values as floats
+        df_weather_rolled.iloc[:,1:9] = df_weather_rolled.iloc[:,1:9].astype("float")
         
         mod_weather_dict[station] = df_weather_rolled
 
         
-    return mod_weather_dict     
+    return mod_weather_dict
+
 
 
 def create_weather_stats(weather_dict, metadata_dict, column_list = ['Air temperature','Cloud amount',
