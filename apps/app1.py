@@ -9,6 +9,7 @@ import plotly.graph_objs as go
 points = pd.read_csv('points.csv')
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
 stations = []
+predictions = pd.read_csv('../data/predictions.csv', index_col=0)
 
 mks = []
 for i in range(points.shape[0]):
@@ -42,8 +43,9 @@ def marker_click(*args):
     marker_id = dash.callback_context.triggered[0]["prop_id"].split(".")[0]
     if marker_id !='':
         idx = int(marker_id[4:])
-        file_name = '../data/time_series_data/' + points.iloc[idx].departure_name.replace('/', '-') + '.csv'
-        df_plot = pd.read_csv(file_name, index_col=0)
+        #file_name = '../data/time_series_data/' + points.iloc[idx].departure_name.replace('/', '-') + '.csv'
+        df_plot = predictions.loc[predictions.station == points.iloc[idx].departure_name,:]
+        #df_plot = pd.read_csv(file_name, index_col=0)
         fig = px.line(df_plot, x='date', y=["Value", "Prediction"], template='plotly_dark')
         fig.update_layout(transition_duration=500)
     else:
