@@ -372,4 +372,6 @@ def train_models_and_save_predictions(path_to_data = './data/time_series_data_tr
         df.loc[:, 'station'] = station
         df_predictions_all = pd.concat([df_predictions_all, df]).reset_index(drop=True)
         df_predictions_all.to_csv(path_to_predictions)
+        path_to_model = './data/models/model_for_' + station.replace("/", "-")
+        save_model(final_best, path_to_model)
     return
