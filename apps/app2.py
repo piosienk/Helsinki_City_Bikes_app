@@ -85,8 +85,8 @@ layout = html.Div([
             dl.Overlay(dl.LayerGroup(new_markers), name="Proposed Stations", checked=True),
              dl.Overlay(dl.LayerGroup(markers), name="Current Stations", checked=False)]
         )],
-        center=(60.19, 24.95), zoom=12, id="map",
-        style={'width': '80%', 'height': '65vh', 'margin': "auto", "display": "block", "align": "center"}),
+        center=(60.17, 24.95), zoom=12, id="map",
+        style={'width': '80%', 'height': '55vh', 'margin': "auto", "display": "block", "align": "center"}),
     html.Br(),
     # Table with best locations
     dash_table.DataTable(id='table',
