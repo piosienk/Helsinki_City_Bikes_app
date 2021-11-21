@@ -64,6 +64,7 @@ new_markers = new_mks
 
 # Create layout
 layout = html.Div([
+    html.H1('An application for management of Helsinki City Bikes'),
     # App selection
     html.Div([
         dcc.RadioItems(
