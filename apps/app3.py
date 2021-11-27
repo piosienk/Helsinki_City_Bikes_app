@@ -20,10 +20,7 @@ html.Div(id='clickdata2')
               [State('dash-uploader', 'fileNames')]
 )
 def callback_on_completion(iscompleted, fileNames):
-    print(iscompleted)
-    print(fileNames)
     path_str = '.\data\\' + fileNames[0]
-    print(path_str)
     if iscompleted:
         df = load_and_filter_data(path_str)
         print(df.shape)
