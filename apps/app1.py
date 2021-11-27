@@ -7,6 +7,8 @@ import plotly.express as px
 import plotly.graph_objs as go
 from datetime import datetime, timedelta
 import numpy as np
+from pycaret.regression import *
+from functions.functions import forecast_weather_transformation
 
 points = pd.read_csv('points.csv')
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
@@ -63,18 +65,15 @@ def marker_click(*args):
         #df_plot = pd.read_csv(file_name, index_col=0)
         fig = px.line(df_plot, x='date', y=["Value", "Prediction"], template='plotly_dark')
         fig.update_layout(transition_duration=500)
-        #### TODO
-        now = datetime.today().strftime('%Y-%m-%d')
-        df_forecast = pd.DataFrame()
-        df_forecast['date'] = np.repeat(now, 7)
-        df_forecast['date'] = pd.to_datetime(df_forecast['date'])
-        df_forecast.loc[:, 'timedelta'] = [timedelta(days=dy) for dy in range(7)]
-        df_forecast.date = df_forecast.date + df_forecast.timedelta
-        df_forecast.loc[:, 'Prediction'] = 0
-        df_forecast = df_forecast[['date', 'Prediction']]
-        fig2 = px.line(df_forecast, x='date', y=["Prediction"], template='plotly_dark')
+        #### TODO - downloading forecast
+        df_forecast = forecast_weather_transformation(df=pd.read_pickle("../data/forecast_weather_dict.pickle"))
+        path_to_model = '../data/models/model_for_' + points.iloc[idx].departure_name.replace('/', '-')
+        print(path_to_model)
+        mdl = load_model(path_to_model)
+        preds = predict_model(mdl, data = df_forecast)
+        preds.loc[preds.cal_month.isin([1, 2, 3, 11, 12]), 'Label'] = 0
+        fig2 = px.line(preds, x='date', y=["Label"], template='plotly_dark')
         fig2.update_layout(transition_duration=500)
-        ####
     else:
         fig = go.Figure()
         fig2 = go.Figure()

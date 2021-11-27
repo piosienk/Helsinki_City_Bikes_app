@@ -113,10 +113,35 @@ def forecast_weather_transformation(df, window_width=2):
     df_for_rolled.iloc[:, 1:9] = df_for.iloc[:, 1:9].rolling(window_width, min_periods=1).mean()
     df_for_rolled.date = df_for_rolled.date + timedelta(hours=-1)
     df_for_rolled = df_for_rolled.iloc[2:, :]
-    df_for.loc[:, 'cal_year'] = df_for['date'].dt.year
-    df_for.loc[:, 'cal_month'] = df_for['date'].dt.month
-    df_for.loc[:, 'cal_day'] = df_for['date'].dt.day
-    df_for.loc[:, 'cal_hour'] = df_for['date'].dt.hour
+    df_for_rolled.loc[:, 'cal_year'] = df_for_rolled['date'].dt.year
+    df_for_rolled.loc[:, 'cal_month'] = df_for_rolled['date'].dt.month
+    df_for_rolled.loc[:, 'cal_day'] = df_for_rolled['date'].dt.day
+    df_for_rolled.loc[:, 'cal_hour'] = df_for_rolled['date'].dt.hour
+
+    hl = pd.DataFrame()
+    for date_day, name in sorted(holidays.Finland(years=[2020, 2021]).items()):
+        hl_instance = pd.DataFrame({'date': [date_day], 'name': [name]})
+        hl = pd.concat([hl, hl_instance])
+    hl.date = hl.date.apply(pd.to_datetime, format='%Y-%m-%d')
+    hl.loc[:, 'cal_year'] = hl['date'].dt.year
+    hl.loc[:, 'cal_month'] = hl['date'].dt.month
+    hl.loc[:, 'cal_day'] = hl['date'].dt.day
+    hl = hl.reset_index(drop=True)
+    hl.loc[:, 'holiday'] = 1
+    for name in hl.name.unique():
+        hl.loc[:, name] = 0
+    for i in range(hl.shape[0]):
+        cname = hl.loc[i, 'name']
+        hl.loc[i, [cname]] = 1
+    hls = ['holiday'] + hl.name.unique().tolist()
+    hl = hl.loc[:, ['cal_year', 'cal_month', 'cal_day', 'holiday'] + hl.name.unique().tolist()]
+    df_for_rolled = df_for_rolled.merge(hl, how='left',
+                                              on=["cal_year", "cal_month", "cal_day"])
+    for cname in hls:
+        df_for_rolled.loc[df_for_rolled[cname].isna(), cname] = 0
+        df_for_rolled[cname] = df_for_rolled[cname].astype(int)
+    df_for_rolled = df_for_rolled.loc[df_for_rolled.cal_hour % 2 == 0, :].reset_index(drop=True)
+
     return df_for_rolled
 
 
