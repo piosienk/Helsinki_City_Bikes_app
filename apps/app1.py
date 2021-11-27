@@ -43,7 +43,8 @@ layout = html.Div([
         ),
     ], className="row"),
     html.Div(id='app-1-display-value'),
-    dcc.Link('Go to App 2', href='/apps/app2')
+    dcc.Link('Go to App 2', href='/apps/app2'),
+    dcc.Link('Go to App 3', href='/apps/app3')
 ])
 # Link drop down to geojson hideout prop (could be done with a normal callback, but clientside is more performant).
 app.clientside_callback("function(x){return x;}", Output("geojson", "hideout"), Input("dd", "value"))
