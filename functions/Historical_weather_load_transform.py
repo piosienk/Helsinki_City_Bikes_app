@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from datetime import date, timedelta
 import os
 import json
 import datetime as dt
@@ -9,7 +10,7 @@ import time
 from functools import reduce
 
 
-def historical_weather_load(end_date, date_format="%Y-%m-%d %H:%M:%S", path="./Data/Weather/Weather_data/"):
+def historical_weather_load(end_date, date_format="%Y-%m-%d %H:%M:%S", path="./data/"):
     """
     end_date - historical weather observations till this date will be loaded
     date_format - format of the end_date
@@ -176,7 +177,7 @@ def historical_weather_load(end_date, date_format="%Y-%m-%d %H:%M:%S", path="./D
     pickle.dump(hist_weather_dict, hist_weather_file)
     hist_weather_file.close()
 
-    return hist_metadata_dict, hist_weather_dict
+    return #hist_metadata_dict, hist_weather_dict
 
 
 def historical_weather_transformations(weather_dict, window_width=2, date_format="%Y-%m-%d %H:%M:%S"):
@@ -228,14 +229,15 @@ def historical_weather_transformations(weather_dict, window_width=2, date_format
 
         mod_weather_dict[station] = df_weather_rolled
 
-    return mod_weather_dict
+        mod_hist_weather_file = open('./data/hist_mod_weather_dict.pickle', "wb")
+        pickle.dump(mod_weather_dict, mod_hist_weather_file)
+        mod_hist_weather_file.close()
+
+    return #mod_weather_dict
 
 
-def create_weather_stats(weather_dict, metadata_dict, column_list=['Air temperature', 'Cloud amount',
-                                                                   'Dew-point temperature', 'Gust speed',
-                                                                   'Precipitation amount', 'Precipitation intensity',
-                                                                   'Pressure (msl)', 'Relative humidity', 'Snow depth',
-                                                                   'Wind speed']):
+def create_weather_stats(weather_dict, metadata_dict, column_list_default=True,
+                         column_list_default_non_default=None):
     """
     weather_dict - dictionary to use
     metadata_dict - dicitonary with metadata
@@ -246,8 +248,14 @@ def create_weather_stats(weather_dict, metadata_dict, column_list=['Air temperat
     returns:
     df_stats - dataframe with average values
     """
+    if column_list_default:
+        column_list = ['Temperature', 'Cloud Cover', 'Wind Gust', 'Precipitation',
+                       'Sea Level Pressure', 'Relative Humidity', 'Snow Depth', 'Wind Speed']
+    else:
+        column_list = column_list_default_non_default
 
-    df_stats = pd.DataFrame(columns=column_list, index=[i for i in range(1, 13)])
+    df_stats = pd.DataFrame(columns=column_list)
+
 
     # list of all dataframes from the dictionary
     dfs = [weather_dict[x] for x in metadata_dict]
@@ -257,12 +265,31 @@ def create_weather_stats(weather_dict, metadata_dict, column_list=['Air temperat
         lambda left, right:
         pd.merge(left, right, on=["cal_year", "cal_month", "cal_day", "cal_hour"], how="outer"), dfs)
 
+    df_concat = df_concat.drop(columns=['date_x', 'date_y'])
+    df_concat_2 = df_concat.loc[df_concat.cal_hour % 2 == 1, :]
+    df_concat_2.loc[:, 'date'] = df_concat_2.date - timedelta(hours=1)
+    df_concat = df_concat.merge(df_concat_2, how = 'right', on = 'date')
+    df_concat.loc[:, 'cal_year'] = df_concat['date'].dt.year
+    df_concat.loc[:, 'cal_month'] = df_concat['date'].dt.month
+    df_concat.loc[:, 'cal_day'] = df_concat['date'].dt.day
+    df_concat.loc[:, 'cal_hour'] = df_concat['date'].dt.hour
+
+
+
     # for each parameter and observation, calculate average value across all stations. Then group observations
     # by month and calculate average on the monthly level
+
     for column in column_list:
         mean_column = "mean" + column
-        df_concat.loc[:, mean_column] = df_concat.loc[:, [column, column + "_y", column + "_x"]].mean(axis=1)
-        df_stats[column] = df_concat.loc[:, ["cal_month", mean_column]].groupby("cal_month").mean()
-
-    return df_stats
+        df_concat.loc[:, mean_column] = df_concat.loc[:, [column + "_y", column + "_x", column + "_y_y",
+                                                          column + "_x_y", column + "_x_x", column + "_y_x"]].mean(axis=1)
+        df_stats[column] = df_concat.loc[:, ["cal_year", "cal_month", "cal_day", "cal_hour", mean_column]].groupby(["cal_year", "cal_month", "cal_day", "cal_hour"]).agg({mean_column: ['mean']}).reset_index(drop=True)
+        #print(df_stats)
+    df_stats.loc[:, 'cal_year'] = df_concat['cal_year']
+    df_stats.loc[:, 'cal_month'] = df_concat['cal_month']
+    df_stats.loc[:, 'cal_day'] = df_concat['cal_day']
+    df_stats.loc[:, 'cal_hour'] = df_concat['cal_hour']
+    df_stats.loc[:,'date'] = df_concat['date']
+    df_stats.to_csv('./data/weather_time_series.csv')
+    return
 

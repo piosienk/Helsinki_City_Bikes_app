@@ -21,7 +21,7 @@ from functions.metrics_class import mean_absolute_percentage_error, mean_absolut
 # And don't share API key ;)
 
 
-def forecast_weather_download(path="./Data/Weather/Weather_data/"):
+def forecast_weather_download(path="./data/"):
     """
     path - path to weather data directory
 
@@ -80,7 +80,6 @@ def forecast_weather_transformation(df, window_width=2):
     df - transformed hourly forecast for Helsinki.
 
     """
-
     df_for = df.iloc[:-1, ].copy()  # remove last observation
 
     # Create calendar columns
@@ -141,6 +140,7 @@ def forecast_weather_transformation(df, window_width=2):
         df_for_rolled.loc[df_for_rolled[cname].isna(), cname] = 0
         df_for_rolled[cname] = df_for_rolled[cname].astype(int)
     df_for_rolled = df_for_rolled.loc[df_for_rolled.cal_hour % 2 == 0, :].reset_index(drop=True)
+    df_for_rolled.to_csv('./data/forecast_time_series.csv')
 
     return df_for_rolled
 
@@ -176,6 +176,7 @@ def prepare_time_series_data(input_dt, time_granularity_in_hours=2):
                                               'dep_day', 'dep_hour']).size().reset_index().rename(columns =
                                                                                                   {0: 'number'})
     time_series_data = pd.DataFrame()
+    station_nr = 1
     for station in df.departure_name.unique():
         station_data = df.loc[df.departure_name == station,:]
         date_data = station_data[['dep_year', 'dep_month', 'dep_day']]
@@ -198,7 +199,11 @@ def prepare_time_series_data(input_dt, time_granularity_in_hours=2):
         calendar.loc[calendar.number.isna(),'number'] = 0
         calendar[['number']] = calendar[['number']].astype(int)
         time_series_data = pd.concat([time_series_data, calendar])
-    return time_series_data.reset_index(drop = True)
+        time_series_data = time_series_data.reset_index(drop = True)
+        time_series_data.reset_index(drop = True).to_csv("./data/time_series_data.csv")
+        print(station_nr)
+        station_nr += 1
+    return #time_series_data.reset_index(drop = True)
 
 
 def get_graph_metrics_for_network(df):
@@ -273,6 +278,8 @@ def transform_time_series(path_to_time_series, path_to_weather):
     for cname in hls:
         time_series_data.loc[time_series_data[cname].isna(), cname] = 0
         time_series_data[cname] = time_series_data[cname].astype(int)
+    time_series_data = time_series_data.drop(columns=['date_y'])
+    time_series_data = time_series_data.rename(columns = {'date_x': 'date'})
     time_series_data.to_csv("./data/time_series_data_transformed.csv")
     return
 
