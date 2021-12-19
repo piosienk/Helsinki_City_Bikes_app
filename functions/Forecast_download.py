@@ -47,8 +47,7 @@ def forecast_weather_download(path="./Data/Weather/Weather_data/"):
                      "Address", "Region", "Country", "Name",
                      "Wind Direction", "Heat Index", "Chance Precipitation (%)",
                      "Snow", "Wind Chill", "Conditions", "Note"], inplace=True)
-    
-        
+
     forecast_weather_file = open(path_forecast_file, "wb")
     pickle.dump(df, forecast_weather_file)
     forecast_weather_file.close()

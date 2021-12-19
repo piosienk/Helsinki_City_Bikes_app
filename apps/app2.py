@@ -64,19 +64,18 @@ new_markers = new_mks
 
 # Create layout
 layout = html.Div([
-    html.H1('An application for management of Helsinki City Bikes'),
     # App selection
-    html.Div([
-        dcc.RadioItems(
-            id="app_select",
-            options=[
-                {'label': 'Existing Stations', 'value': 'app1'},
-                {'label': 'New Stations', 'value': "app2"}
-            ],
-            value='app2',
-            labelStyle={'display': 'flex'}
-        )
-    ], id='app_selection', style={}),
+    # html.Div([
+    #     dcc.RadioItems(
+    #         id="app_select",
+    #         options=[
+    #             {'label': 'Existing Stations', 'value': 'app1'},
+    #             {'label': 'New Stations', 'value': "app2"}
+    #         ],
+    #         value='app2',
+    #         labelStyle={'display': 'flex'}
+    #     )
+    # ], id='app_selection', style={}),
     # Map of Helsinki
     dl.Map([
         html.Br(),
@@ -86,7 +85,8 @@ layout = html.Div([
              dl.Overlay(dl.LayerGroup(markers), name="Current Stations", checked=False)]
         )],
         center=(60.17, 24.95), zoom=12, id="map",
-        style={'width': '80%', 'height': '55vh', 'margin': "auto", "display": "block", "align": "center"}),
+        style={'width': '70%', 'height': '55vh', 'margin': "auto", "display": "block", "align": "center",
+               'margin-top': '150px', 'z-index': '1'}),
     html.Br(),
     # Table with best locations
     dash_table.DataTable(id='table',
@@ -132,13 +132,13 @@ def marker_click(*args):
         {"if": {"filter_query": "{{Ranking}} ={}".format(idx)}, "backgroundColor": "#fc9272", }]
     return val
 
-# change app
-@app.callback(
-    Output('hidden_div', 'children'),
-    Input('app_select', 'value')
-)
-def app_select(value):
-    if value == 'app1':
-        return dcc.Location(pathname='/apps/app1', id='app1')
-    else:
-        return dcc.Location(pathname='/apps/app2', id='app1')
+# # change app
+# @app.callback(
+#     Output('hidden_div', 'children'),
+#     Input('app_select', 'value')
+# )
+# def app_select(value):
+#     if value == 'app1':
+#         return dcc.Location(pathname='/apps/app1', id='app1')
+#     else:
+#         return dcc.Location(pathname='/apps/app2', id='app1')

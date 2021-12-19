@@ -159,7 +159,8 @@ def load_and_filter_data(path_to_file):
                 (df['duration (sec.)'] > 60) & (df['avg_speed (km/h)'] > 0),
                 ['departure', 'return', 'departure_name', 'return_name', 'departure_latitude', 'departure_longitude',
                  'return_latitude', 'return_longitude']].dropna().reset_index(drop=True)
-    df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
+    #df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
+    df.to_csv('./data/filtered_data.csv', index=False)
     return df
 
 
@@ -285,8 +286,9 @@ def transform_time_series(path_to_time_series, path_to_weather):
 
 
 def load_and_transform_forecast_data():
-    forecast_data = forecast_weather_download('./data')
-    forecast_data = forecast_weather_transformation(forecast_data)
+    #forecast_data = forecast_weather_download('./data')
+    #forecast_data = forecast_weather_transformation(forecast_data)
+    forecast_data = forecast_weather_transformation(pd.read_pickle('./data/forecast_weather_dict.pickle'))
     now_year = date.today().year
     hl = pd.DataFrame()
     for date_day, name in sorted(holidays.Finland(years=[now_year, now_year + 1]).items()):
@@ -332,6 +334,7 @@ def train_models_and_save_predictions(path_to_data = './data/time_series_data_tr
     df_predictions_all = pd.DataFrame()
     dt_all = pd.read_csv(path_to_data, index_col=0)
     for station in dt_all['departure'].unique():
+        print(station)
         dt = dt_all.loc[dt_all.departure == station, :].reset_index(drop=True)
         dt = dt.loc[~dt.cal_month.isin([1, 2, 3, 11, 12]), :]
         dt.number = dt.number + 0.1

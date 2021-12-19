@@ -1,0 +1,99 @@
+html, body{
+  height: 100%;
+  font-family: Arial;
+}
+
+body {
+  background-color: darkblue;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#header-title {
+  position: fixed;
+  z-index: 2;
+  width: 50%;
+  margin-left: -25%;
+  background: lightblue;
+  left: 50%;
+  text-align: center;
+  border: 5px solid black;
+  top: 0;
+  border-radius: 10px;
+}
+
+#app_select{
+  position: fixed;
+  z-index: 2;
+  width: 100px;
+  height: auto;
+  margin-left: 0;
+  background: lightgreen;
+  left: 5%;
+  text-align: center;
+  border: 2px solid black;
+  top: 30%;
+  vertical-align: middle;
+  border-radius: 10px;
+}
+
+H4{
+  border: 5px solid black;
+  border-radius: 5px;
+  /*margin-left: 15%;*/
+  /*width: 50px;*/
+  /*text-align: left;*/
+}
+
+*[class="clickdata2-loading"][data-dash-is-loading="true"]{
+  visibility: hidden;
+}
+*[class="clickdata2-loading"][data-dash-is-loading="true"]::before {
+  content: "Uploaded data is being filtered... (1/5)";
+  display: inline-block;
+  color: orange;
+  visibility: visible;
+  left: 30%;
+}
+
+*[class="clickdata4-loading"][data-dash-is-loading="true"]{
+  visibility: hidden;
+}
+*[class="clickdata4-loading"][data-dash-is-loading="true"]::before {
+  content: "Uploaded data is being transformed to time series... (2/5)";
+  display: inline-block;
+  color: orange;
+  visibility: visible;
+  left: 30%;
+}
+*[class="clickdata5-loading"][data-dash-is-loading="true"] {
+  visibility: hidden;
+}
+*[class="clickdata5-loading"][data-dash-is-loading="true"]::before {
+  content: "Historical weather data is being loadad... (3/5)";
+  display: inline-block;
+  color: orange;
+  visibility: visible;
+  left: 30%;
+}
+*[class="clickdata6-loading"][data-dash-is-loading="true"] {
+  visibility: hidden;
+}
+*[class="clickdata6-loading"][data-dash-is-loading="true"]::before {
+  content: "Final time series are being prepared... (4/5)";
+  display: inline-block;
+  color: orange;
+  visibility: visible;
+  left: 30%;
+}
+*[class="clickdata7-loading"][data-dash-is-loading="true"] {
+  visibility: hidden;
+}
+*[class="clickdata7-loading"][data-dash-is-loading="true"]::before {
+  content: "Models for each station are being trained... (5/5)";
+  display: inline-block;
+  color: orange;
+  visibility: visible;
+  left: 30%;
+}
+

@@ -177,7 +177,7 @@ def historical_weather_load(end_date, date_format="%Y-%m-%d %H:%M:%S", path="./d
     pickle.dump(hist_weather_dict, hist_weather_file)
     hist_weather_file.close()
 
-    return #hist_metadata_dict, hist_weather_dict
+    return hist_metadata_dict, hist_weather_dict
 
 
 def historical_weather_transformations(weather_dict, window_width=2, date_format="%Y-%m-%d %H:%M:%S"):
@@ -233,7 +233,7 @@ def historical_weather_transformations(weather_dict, window_width=2, date_format
         pickle.dump(mod_weather_dict, mod_hist_weather_file)
         mod_hist_weather_file.close()
 
-    return #mod_weather_dict
+    return mod_weather_dict
 
 
 def create_weather_stats(weather_dict, metadata_dict, column_list_default=True,
