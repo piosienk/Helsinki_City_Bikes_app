@@ -10,15 +10,15 @@ points = pd.read_csv('points.csv')
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
 stations = []
 
-df_stations = pd.read_csv('../data/df_top_locations.csv')
+df_stations = pd.read_csv('../data/updated_df_top_locations.csv')
 df_stations = df_stations.reset_index()
-df_stations.columns = ["Ranking", "Latitude", "Longitude", "Estimated number of departures (weekend)",
-                       "Estimated number of departures (working days)", "Weighted Score"]
+df_stations.columns = ["Ranking", "Latitude", "Longitude", "Predicted weekend departures",
+                       "Predicted working days departures", "Weighted Score"]
 
-df_stations.loc[:, ['Estimated number of departures (weekend)',
-                    "Estimated number of departures (working days)",
-                    "Weighted Score"]] = df_stations.loc[:, ['Estimated number of departures (weekend)',
-                                                             "Estimated number of departures (working days)",
+df_stations.loc[:, ['Predicted weekend departures',
+                    "Predicted working days departures",
+                    "Weighted Score"]] = df_stations.loc[:, ['Predicted weekend departures',
+                                                             "Predicted working days departures",
                                                              "Weighted Score"]].round(2)
 
 df_stations.loc[:, "Ranking"] += 1
@@ -85,38 +85,40 @@ layout = html.Div([
              dl.Overlay(dl.LayerGroup(markers), name="Current Stations", checked=False)]
         )],
         center=(60.17, 24.95), zoom=12, id="map",
-        style={'width': '70%', 'height': '55vh', 'margin': "auto", "display": "block", "align": "center",
-               'margin-top': '150px', 'z-index': '1'}),
+        style={'width': '70%', 'height': '60%', 'z-index': '1',
+               'margin-top': '0', 'position': 'absolute', 'top': "0%", 'left': '30%'}),
+
     html.Br(),
+
     # Table with best locations
-    dash_table.DataTable(id='table',
+    html.Div([dash_table.DataTable(id='table',
                          columns=[{"name": i, "id": i} for i in df_stations.columns],
                          data=df_stations.to_dict('records'),
                          style_table={"minWidth": "100%",
-                                      "height": "25vh",
+                                      "height": "40vh",
                                       "overflowY": 'scroll'},
                          style_as_list_view=False,
                          style_header={
                              'backgroundColor': " rgb(180,180,180)",
                              'fontWeight': 'bold',
-                             'fontSize': '16pt',
+                             'fontSize': '12pt',
                              'color': 'white'
                          },
                          style_data={
                              'backgroundColor': 'white',
                              'color': 'black',
-                             'fontSize': '13pt',
+                             'fontSize': '10pt',
                          },
                          style_cell_conditional=[
                              {
                                  'if': {"column_id": c},
                                  'fontWeight': 'bold'
                              } for c in ["Weighted Score", "Ranking"]
-                         ]
-                         ),
+                         ]),
     # hidden div to address callback
-    html.Div(id="hidden_div")
-])
+    html.Div(id="hidden_div")],
+             style={'width': '70%', 'height': '40%', 'z-index': '1',
+               'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '30%'})])
 
 # highlight row related to marker
 @app.callback(

@@ -40,8 +40,8 @@ cluster = dl.MarkerClusterGroup(id="markers", children=markers, options={"polygo
 layout = html.Div(id='all',
                   children=[
                       dl.Map(children=[dl.TileLayer(), cluster], center=(60.19, 24.95), zoom=11, id="map",
-                    style={'width': '70%', 'height': '70vh', 'margin': "auto", "display": "block", "align": "left",
-                           'z-index': '1', 'margin-top': '150px'}),
+                    style={'width': '70%', 'height': '60%',  'z-index': '1',
+                           'margin-top': '0', 'position': 'absolute', 'top': "0%", 'left': '30%'}),
     #dcc.Dropdown(id='time_series_stations', value = None,
     #             options = [{'label': v, 'value': k} for k, v in points[['departure_name']].squeeze().to_dict().items()],
     #             clearable=False, multi=False),
@@ -49,10 +49,16 @@ layout = html.Div(id='all',
 dbc.Card(
         dbc.CardBody([
 dbc.Row([
-                dbc.Col([html.H4(id='clickdata')], width=1),
+                dbc.Col([html.H4(id='clickdata',
+                                 style={'width': '20vw', 'z-index': '1',
+                                        'margin-top': '2.5vh', 'position': 'absolute', 'top': "60vh", 'left': '2.25vw'}
+                                 ),
+                         ], width=1),
                 dbc.Col([
 html.H4('You have forecast data since {}, to {}'.format(f_min, f_max),
-        id='forecast_info')
+        id='forecast_info' ,
+        style={'width': '20vw', 'z-index': '1',
+                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "70vh", 'left': '2.25vw'})
                 ], width=2)], align='center', style={'width': '80%', 'align-items': 'center', 'marigin-left': '15%'})]))]
 
         # html.Div(children=[html.H4(id='clickdata')],
@@ -65,18 +71,20 @@ html.H4('You have forecast data since {}, to {}'.format(f_min, f_max),
         #          )], className='row', style={'height': '150px', 'width': '100%', 'display': 'block', 'align-items': 'center', 'justify-content': 'center'}
              #html.Button('Upload current forecast', id='upload', n_clicks=0)], className="row"
              ),
-html.Button('Upload current forecast', id='upload', n_clicks=0),
+html.Button('Upload current forecast', id='upload', n_clicks=0,
+            style={'width': '10vw', 'z-index': '1', 'font-size':"smaller",
+                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "80vh", 'left': '2.25vw'}),
     html.Div(children=[
         html.Div(children=[
             dcc.Graph(id="graph-with-slider")
 
-            ],style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0.5vw', 'margin-top': '3vw',
-                     'width': '45%'}
+            ],style={'display': 'inline-block', 'vertical-align': 'top', 'width': '35%', 'z-index': '1',
+                           'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '30%'}
         ),
         html.Div(children=[
             dcc.Graph(id="graph2")],
-            style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '0.5vw', 'margin-top': '3vw',
-                   'width': '45%'}
+            style={'display': 'inline-block', 'vertical-align': 'top', 'width': '35%',  'z-index': '1',
+                           'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '65%'}
         )
     ], className="row", style={'height': '150px', 'width': '100%', 'display': 'block', 'align-items': 'center', 'justify-content': 'center'}),
     html.Div(id='app-1-display-value')
