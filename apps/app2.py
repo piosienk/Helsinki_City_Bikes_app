@@ -99,7 +99,7 @@ layout = html.Div([
                                       "overflowY": 'scroll'},
                          style_as_list_view=False,
                          style_header={
-                             'backgroundColor': " rgb(180,180,180)",
+                             'backgroundColor': "lightgreen",
                              'fontWeight': 'bold',
                              'fontSize': '12pt',
                              'color': 'white'
