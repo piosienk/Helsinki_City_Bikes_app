@@ -1,16 +1,17 @@
-from app import app
 import dash
 import dash_leaflet as dl
 import pandas as pd
-from dash import html, dcc, Output, Input
 from dash import dash_table
+from dash import html, Output, Input
+
+from app import app
 
 # Initial data transformation
 points = pd.read_csv('points.csv')
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
 stations = []
 
-df_stations = pd.read_csv('../data/updated_df_top_locations.csv')
+df_stations = pd.read_csv('../New_stations/Data/Results/df_top_locations.csv')
 df_stations = df_stations.reset_index()
 df_stations.columns = ["Ranking", "Latitude", "Longitude", "Predicted weekend departures",
                        "Predicted working days departures", "Weighted Score"]
@@ -64,18 +65,7 @@ new_markers = new_mks
 
 # Create layout
 layout = html.Div([
-    # App selection
-    # html.Div([
-    #     dcc.RadioItems(
-    #         id="app_select",
-    #         options=[
-    #             {'label': 'Existing Stations', 'value': 'app1'},
-    #             {'label': 'New Stations', 'value': "app2"}
-    #         ],
-    #         value='app2',
-    #         labelStyle={'display': 'flex'}
-    #     )
-    # ], id='app_selection', style={}),
+
     # Map of Helsinki
     dl.Map([
         html.Br(),
@@ -133,14 +123,3 @@ def marker_click(*args):
     val = [
         {"if": {"filter_query": "{{Ranking}} ={}".format(idx)}, "backgroundColor": "#fc9272", }]
     return val
-
-# # change app
-# @app.callback(
-#     Output('hidden_div', 'children'),
-#     Input('app_select', 'value')
-# )
-# def app_select(value):
-#     if value == 'app1':
-#         return dcc.Location(pathname='/apps/app1', id='app1')
-#     else:
-#         return dcc.Location(pathname='/apps/app2', id='app1')

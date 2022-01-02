@@ -1,9 +1,6 @@
-import os
-
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
-
 
 from app import app
 from apps import app1, app2, app3, app4

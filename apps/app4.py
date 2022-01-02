@@ -1,17 +1,11 @@
 import math
 import pickle
 
-import dash_leaflet as dl
-import dash_leaflet.express as dlx
-from dash import dash_table
-import pandas as pd
-import plotly.express as px
-from dash_extensions.javascript import assign
-from dash import Dash, html, dcc, html, dcc, Output, Input
-import plotly.graph_objects as go
-import folium
 import branca.colormap as cm
-from folium import plugins
+import folium
+import plotly.express as px
+from dash import dash_table
+from dash import html, dcc, Output, Input
 
 # Initial data transformation
 # MAP data
@@ -20,8 +14,9 @@ from app import app
 colorscale = ['#4575b4', '#abd9e9', '#fee090', '#fdae61', '#f46d43', '#d73027']  # rainbow
 color_prop = 'number'
 
-file_to_read = open("data/time_periods/most_popular_in_periods.pickle", "rb")
+file_to_read = open("../New_stations/Data/Statistics/most_popular_in_periods.pickle", "rb")
 list_df = pickle.load(file_to_read)
+file_to_read.close()
 
 radius_scaler = [200, 30, 7, 2, 1]
 color_scaler = [10, 100, 500, 1500, 2000]
@@ -46,25 +41,24 @@ for i in range(len(list_df)):
                             fill_opacity=0.9,
                             ).add_to(hel_map)
 
-    file_name = "Helsinki_heat_" + str(i) + ".html"
+    file_name = "../assets/Helsinki_heat_" + str(i) + ".html"
 
     hel_map.save(file_name)
 
 # Barplot data
 options_list = ["last week", "last month", "last 3 months", "last year", "full time period"]
-file_to_read = open("data/time_periods/most_popular_in_periods.pickle", "rb")
-list_df = pickle.load(file_to_read)
 
 # Table data
-table_file_to_read = open("data/time_periods/most_popular_connections.pickle", "rb")
+table_file_to_read = open("../New_stations/Data/Statistics/most_popular_connections.pickle", "rb")
 list_table_df = pickle.load(table_file_to_read)
+table_file_to_read.close()
 df_table = list_table_df[4].iloc[:,1:]
 df_table.loc[:, "departure_name"] = df_table.loc[:, "departure_name"].str.split(",").str[0]
 df_table.loc[:, "return_name"] = df_table.loc[:, "return_name"].str.split(",").str[0]
 df_table.columns = ["Departure station", "Return Station", "Rides"]
 df_table = df_table.head(25)
 
-layout = html.Div([html.Iframe(id='map', srcDoc=open("Helsinki_heat_4.html", "r").read(),
+layout = html.Div([html.Iframe(id='map', srcDoc=open("../assets/Helsinki_heat_4.html", "r").read(),
                                style={'width': '69.8%', 'height': '60%', 'z-index': '1',
                                       'margin-top': '0', 'position': 'absolute', 'top': "0%", 'left': '30%'}),
                    dcc.Dropdown(
@@ -103,23 +97,13 @@ layout = html.Div([html.Iframe(id='map', srcDoc=open("Helsinki_heat_4.html", "r"
                    ])
 
 
-# # change app
-# @app.callback(
-#     Output('hidden_div', 'children'),
-#     Input('app_select', 'value')
-# )
-# def app_select(value):
-#     if value == 'app1':
-#         return dcc.Location(pathname='/apps/app1', id='app1')
-#     else:
-#         return dcc.Location(pathname='/apps/app2_copy', id='app1')
-
 @app.callback(
     [Output("table_connections", "data")],
     [Input("dropdown_period", "value")])
 def update_table(period_index):
-    table_file_to_read_updated = open("data/time_periods/most_popular_connections.pickle", "rb")
+    table_file_to_read_updated = open("../New_stations/Data/Statistics/most_popular_connections.pickle", "rb")
     list_table_df_updated = pickle.load(table_file_to_read_updated)
+    table_file_to_read_updated.close()
     df_table_updated = list_table_df_updated[period_index].iloc[:, 1:]
     df_table_updated.loc[:, "departure_name"] = df_table_updated.loc[:, "departure_name"].str.split(",").str[0]
     df_table_updated.loc[:, "return_name"] = df_table_updated.loc[:, "return_name"].str.split(",").str[0]
@@ -142,7 +126,7 @@ def update_barplot(period_index):
     fig.update_xaxes(visible=True, showticklabels=True)
     fig.update(layout_coloraxis_showscale=False)
     fig.update_layout(
-        margin=dict(l=5, r=570, t=50, b=5),
+        margin=dict(l=5, r=570, t=40, b=5),
     )
     return [fig]
 
@@ -150,7 +134,6 @@ def update_barplot(period_index):
     [Output("map", "srcDoc")],
     [Input("dropdown_period", "value")])
 def update_barplot(period_index):
-
-    file_name = "Helsinki_heat_" + str(period_index) + ".html"
+    file_name = "../assets/Helsinki_heat_" + str(period_index) + ".html"
     srcDoc = open(file_name, "r").read()
     return [srcDoc]

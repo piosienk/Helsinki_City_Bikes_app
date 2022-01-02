@@ -1,19 +1,16 @@
-import pandas as pd
-import numpy as np
-from datetime import date, timedelta
-import networkx as nx
-import holidays
-import requests
-import pandas as pd
 import datetime as dt
-import os
 import pickle
+from datetime import date
 from datetime import timedelta
-from pycaret.regression import *
-from functions.ts_class import TimeSeriesSplit
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-from functions.metrics_class import mean_absolute_percentage_error, mean_absolute_scaled_error
 
+import holidays
+import networkx as nx
+import requests
+from pycaret.regression import *
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+from functions.metrics_class import mean_absolute_percentage_error, mean_absolute_scaled_error
+from functions.ts_class import TimeSeriesSplit
 
 
 # IMPORTANT!!!
