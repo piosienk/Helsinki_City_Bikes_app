@@ -5,7 +5,7 @@ In order to run project, you need to download and copy the following files:
 
 ../Helsinki_City_Bikes_app/New_stations/Data/Graph/Helsinki_roads_graph.graphml  
 ../Helsinki_City_Bikes_app/New_stations/Data/Places_data/merged_places_05.txt  
-../Helsinki_City_Bikes_app/New_stations/Data/Places_data/merged_places_05.txt
+../Helsinki_City_Bikes_app/New_stations/Data/Places_data/merged_places_05.txt   
 ../Helsinki_City_Bikes_app/Existing_stations/Data/Models/
 
 from:  
