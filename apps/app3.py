@@ -95,7 +95,7 @@ def callback(value):
         df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
         df[['departure_name', 'departure_latitude', 'departure_longitude']]\
             .to_csv('../Existing_stations/Data/Results/points.csv')
-        #prepare_time_series_data(df)
+        prepare_time_series_data(df)
         return ['uploaded']
 
     return ['notuploaded']
