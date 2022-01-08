@@ -7,7 +7,8 @@ from dash import html, Output, Input
 from app import app
 
 # Initial data transformation
-points = pd.read_csv('points.csv')
+points = pd.read_csv('../Existing_stations/Data/Results/points.csv')
+points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
 stations = []
 

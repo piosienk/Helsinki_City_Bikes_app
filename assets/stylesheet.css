@@ -46,7 +46,8 @@ H4{
   /*text-align: left;*/
 }
 
-*[class="clickdata2-loading"][data-dash-is-loading="true"]{
+
+*[class="clickdata2-loading"][data-dash-is-loading="false"]{
   visibility: hidden;
 }
 *[class="clickdata2-loading"][data-dash-is-loading="true"]::before {
@@ -55,6 +56,8 @@ H4{
   color: orange;
   visibility: visible;
   left: 30%;
+  z-index: 0;
+  top: 150px;
 }
 
 *[class="clickdata4-loading"][data-dash-is-loading="true"]{
@@ -66,6 +69,8 @@ H4{
   color: orange;
   visibility: visible;
   left: 30%;
+  z-index: 0;
+  top: 150px;
 }
 *[class="clickdata5-loading"][data-dash-is-loading="true"] {
   visibility: hidden;
@@ -76,6 +81,8 @@ H4{
   color: orange;
   visibility: visible;
   left: 30%;
+  z-index: 0;
+  top: 150px;
 }
 *[class="clickdata6-loading"][data-dash-is-loading="true"] {
   visibility: hidden;
@@ -97,4 +104,3 @@ H4{
   visibility: visible;
   left: 30%;
 }
-

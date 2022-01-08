@@ -1,4 +1,9 @@
 import math
+import pandas as pd
+import os
+import pickle
+import numpy as np
+from pycaret.regression import load_model
 
 import branca.colormap as cm
 import dash_uploader as du
@@ -11,37 +16,58 @@ from New_stations.Functions.Modelling_functions.Select_best_locations import per
 from New_stations.Functions.Modelling_functions.Train_Predict_stations_model import predict_stations
 from New_stations.Functions.Stats_functions.Stations_statistics import most_popular_in_periods, most_popular_connections
 from app import app
-from functions.Historical_weather_load_transform import *
-from functions.functions import *
+from Existing_stations.Functions.Time_series_functions import load_and_filter_data, prepare_time_series_data,\
+    transform_time_series
+from Existing_stations.Functions.Historical_weather_functions import historical_weather_load,\
+    historical_weather_transformations, create_weather_stats
+from Existing_stations.Functions.Modelling_functions import train_models_and_save_predictions
+from Existing_stations.Functions.Forecast_weather_functions import forecast_weather_transformation
 
-forecast_data = pd.read_csv('../data/forecast_time_series.csv')
+forecast_data = forecast_weather_transformation(
+        df=pd.read_pickle("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"))
+historical_data = pd.read_csv("../Existing_stations/Data/Time_series/time_series_data_transformed.csv")
 
 layout = html.Div([
-    html.Div(id='forecast_value', style={'whiteSpace': 'pre-line', 'width': '70%', 'height': '70vh',
-                                         'margin': "auto", "display": "block", "align": "left",
-                                         'z-index': '1', 'margin-top': '150px'},
-             children=f'You have downloaded weather forecast since {np.min(forecast_data.date)} '
-                      f'up to {np.max(forecast_data.date)}.'),
-    du.Upload(id='dash-uploader',
-              text_completed='New bike data added: ',
-              max_file_size=10000,
-              chunk_size=2048,
-              filetypes=['csv']
-              ),
+    html.Div(id='forecast_value', style={'width': '20vw', 'z-index': '1', 'font-size': "smaller",
+                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "50vh", 'left': '2.25vw',
+                   'background-color': 'lightgreen', 'border': '5px solid black', 'border-radius': '5px'},
+             children=[f'You have downloaded weather forecast', html.Br(), f'since {np.min(forecast_data.date)} ',
+                      html.Br(), f' up to {np.max(forecast_data.date)}.']),
+    html.Div(id='historical_value',
+             children=['You have downloaded historical data', html.Br(), f'since {np.min(historical_data.date)} ',
+                       html.Br(), f' up to {np.max(historical_data.date)}.'],
+             style={'width': '20vw', 'z-index': '1', 'font-size': "smaller",
+                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "60vh", 'left': '2.25vw',
+                   'background-color': 'lightgreen', 'border': '5px solid black', 'border-radius': '5px'}
+             ),
+    html.Div(du.Upload(id='dash-uploader',
+                       text_completed='New bike data added: ',
+                       max_file_size=10000,
+                       chunk_size=2048,
+                       filetypes=['csv']),
+             style={'width': '60%',  'z-index': '1','margin-top': '10px',
+                    'position': 'absolute', 'top': "0%", 'left': '30%', 'border': '10px solid black',
+                    'border-radius': '5px'}),
+    html.Div(children=[
     dcc.Loading(type="default", children=html.Div(id='clickdata2',
                                                   className="clickdata2-loading"),
-                color='orange'),
-    html.Div(id='clickdata3'),
+                color='orange', parent_style={'color': 'darkblue'}),
     dcc.Loading(type="default", children=html.Div(id='clickdata4',
-                                                  className="clickdata4-loading"), color='orange'),
+                                                  className="clickdata4-loading"), color='orange',
+                parent_style={'color': 'darkblue'}),
     dcc.Loading(type="default", children=html.Div(id='clickdata5',
-                                                  className="clickdata5-loading"), color='orange'),
+                                                  className="clickdata5-loading"), color='orange',
+                parent_style={'color': 'darkblue'}),
     dcc.Loading(type="default", children=html.Div(id='clickdata6',
-                                                  className="clickdata6-loading"), color='orange'),
+                                                  className="clickdata6-loading"), color='orange',
+                parent_style={'color': 'darkblue'}),
     dcc.Loading(type="default", children=html.Div(id='clickdata7',
-                                                  className="clickdata7-loading"), color='orange'),
+                                                  className="clickdata7-loading"), color='orange',
+                parent_style={'color': 'darkblue'}),
     dcc.Loading(type="default", children=html.Div(id='clickdata8',
-                                                  className="clickdata8-loading"), color='orange')
+                                                  className="clickdata8-loading"), color='orange',
+                parent_style={'color': 'darkblue'})], style={'width': '50vw', 'z-index': '1', 'margin-top': '2.5vh', 'position': 'absolute', 'top': "70vh",
+               'left': '2.25vw'})
 ])
 
 
@@ -53,9 +79,9 @@ def callback_on_completion(iscompleted, fileNames):
     if iscompleted:
         print('filtering')
         path_str = '.\data\\' + fileNames[0]
-        path_str = "./data/database.csv"  # For Unix
+        #path_str = "./data/database.csv"  # For Unix
         df = load_and_filter_data(path_str)
-        print(df.shape)
+        #print(df.shape)
         return ['uploaded']
     return ['notuploaded']
 
@@ -65,11 +91,11 @@ def callback_on_completion(iscompleted, fileNames):
 def callback(value):
     print(value)
     if value == 'uploaded':
-
-        df = pd.read_csv('./data/filtered_data.csv')
+        df = pd.read_csv('../Existing_stations/Data/Time_series/filtered_data.csv')
         df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
-        ts_data = prepare_time_series_data(df)
-        #print(ts_data.shape)
+        df[['departure_name', 'departure_latitude', 'departure_longitude']]\
+            .to_csv('../Existing_stations/Data/Results/points.csv')
+        #prepare_time_series_data(df)
         return ['uploaded']
 
     return ['notuploaded']
@@ -80,7 +106,7 @@ def callback(value):
 def callback(value):
     print(value)
     if value == 'uploaded':
-        ts_data = pd.read_csv('./data/time_series_data.csv')
+        ts_data = pd.read_csv('../Existing_stations/Data/Time_series/time_series_data.csv')
         hist_metadata_dict, hist_weather_dict = historical_weather_load(end_date=np.max(ts_data.date))
         print(3)
         mod_weather_dict = historical_weather_transformations(hist_weather_dict)
@@ -94,8 +120,10 @@ def callback(value):
               [Input('clickdata5', 'children')])
 def callback(value):
     print(value)
+    print('preparing final time series')
     if value == 'uploaded':
-        transform_time_series('./data/time_series_data.csv', './data/weather_time_series.csv')
+        transform_time_series('../Existing_stations/Data/Time_series/time_series_data.csv',
+                              '../Existing_stations/Data/Weather/weather_time_series.csv')
         return ['uploaded']
     return ['notuploaded']
 
