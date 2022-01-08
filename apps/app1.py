@@ -38,41 +38,49 @@ cluster = dl.MarkerClusterGroup(id="markers", children=markers, options={"polygo
 layout = html.Div(id='all',
                   children=[
                       dl.Map(children=[dl.TileLayer(), cluster], center=(60.19, 24.95), zoom=11, id="map",
-                    style={'width': '70%', 'height': '60%',  'z-index': '1',
-                           'margin-top': '0', 'position': 'absolute', 'top': "0%", 'left': '30%'}),
+                             style={'width': '70%', 'height': '60%', 'z-index': '1',
+                                    'margin-top': '0', 'position': 'absolute', 'top': "0%", 'left': '30%'}),
                       html.Div(children=[
-dbc.Card(
-        dbc.CardBody([
-dbc.Row([
-                dbc.Col([html.H4(id='clickdata',
-                                 style={'width': '20vw', 'z-index': '1',
-                                        'margin-top': '2.5vh', 'position': 'absolute', 'top': "60vh", 'left': '2.25vw',
-                                        'background-color': 'lightgreen'}),
-                         ], width=1),
-                dbc.Col([
-html.H4(value_forecast,
-        id='forecast_info',
-        style={'width': '20vw', 'z-index': '1', 'margin-top': '2.5vh', 'position': 'absolute', 'top': "70vh",
-               'left': '2.25vw', 'background-color': 'lightgreen'})
-                ], width=2)], align='center', style={'width': '80%', 'align-items': 'center', 'marigin-left': '15%'})]))
-    ]),
-html.Button('Upload current forecast', id='forecast_upload', n_clicks=0,
-            style={'width': '10vw', 'z-index': '1', 'font-size': "smaller",
-                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "80vh", 'left': '2.25vw',
-                   'background-color': 'lightgreen', 'border': '5px solid black', 'border-radius': '5px'}),
-    html.Div(children=[
-        html.Div(children=[
-            dcc.Graph(id="graph-with-slider")
+                          dbc.Card(
+                              dbc.CardBody([
+                                  dbc.Row([
+                                      dbc.Col([html.H4(id='clickdata',
+                                                       style={'width': '20vw', 'z-index': '1',
+                                                              'margin-top': '2.5vh', 'position': 'absolute',
+                                                              'top': "60vh", 'left': '2.25vw',
+                                                              'background-color': 'lightgreen',
+                                                              'border': '2px solid black'}),
+                                               ], width=1),
+                                      dbc.Col([
+                                          html.H4(value_forecast,
+                                                  id='forecast_info',
+                                                  style={'width': '20vw', 'z-index': '1', 'margin-top': '2.5vh',
+                                                         'position': 'absolute', 'top': "70vh",
+                                                         'left': '2.25vw', 'background-color': 'lightgreen',
+                                                         'border': '2px solid black'})
+                                      ], width=2)], align='center', style={'width': '80%', 'align-items': 'center',
+                                                                           'marigin-left': '15%'})]))
+                      ]),
+                      html.Button('Upload current forecast', id='forecast_upload', n_clicks=0,
+                                  style={'width': '10vw', 'z-index': '1', 'font-size': "smaller",
+                                         'margin-top': '2.5vh', 'position': 'absolute', 'top': "80vh", 'left': '2.25vw',
+                                         'background-color': 'lightgreen', 'border': '2px solid black',
+                                         'border-radius': '5px'}),
+                      html.Div(children=[
+                          html.Div(children=[
+                              dcc.Graph(id="graph-with-slider")
 
-            ],style={'display': 'inline-block', 'vertical-align': 'top', 'width': '35%', 'z-index': '1',
-                           'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '30%'}
-        ),
-        html.Div(children=[
-            dcc.Graph(id="graph2")],
-            style={'display': 'inline-block', 'vertical-align': 'top', 'width': '35%',  'z-index': '1',
-                           'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '65%'}
-        )
-    ], className="row", style={'height': '150px', 'width': '100%', 'display': 'block', 'align-items': 'center', 'justify-content': 'center'}),
+                          ], style={'display': 'inline-block', 'vertical-align': 'top', 'width': '35%', 'z-index': '1',
+                                    'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '30%'}
+                          ),
+                          html.Div(children=[
+                              dcc.Graph(id="graph2")],
+                              style={'display': 'inline-block', 'vertical-align': 'top', 'width': '35%', 'z-index': '1',
+                                     'margin': '0', 'position': 'absolute', 'top': "60%", 'left': '65%'}
+                          )
+                      ], className="row",
+                          style={'height': '150px', 'width': '100%', 'display': 'block', 'align-items': 'center',
+                                 'justify-content': 'center'}),
     html.Div(id='app-1-display-value')
 ])
 # Link drop down to geojson hideout prop (could be done with a normal callback, but clientside is more performant).

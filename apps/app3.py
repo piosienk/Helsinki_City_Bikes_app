@@ -78,10 +78,8 @@ layout = html.Div([
 def callback_on_completion(iscompleted, fileNames):
     if iscompleted:
         print('filtering')
-        path_str = '.\data\\' + fileNames[0]
-        #path_str = "./data/database.csv"  # For Unix
+        path_str = os.path.join('.', 'data', fileNames[0])
         df = load_and_filter_data(path_str)
-        #print(df.shape)
         return ['uploaded']
     return ['notuploaded']
 
@@ -145,24 +143,23 @@ def callback(value):
     if value == 'uploaded':
 
         owd = os.getcwd()
-        os.chdir("../New_stations/")
-        bikes_path = owd + "/data/database.csv"
-        path = "./Data/"
+        os.chdir(os.path.join("..", "New_stations"))
+        bikes_path = os.path.join(owd, "data", "database.csv")
+        path = os.path.join(".", "Data", "")
 
-        print(bikes_path)
         df_weekend, df_working = aggregate_stations_data(path=path, bikes_path=bikes_path,
                                                          update_flag=False)
         df_locations = aggregate_locations_data(path=path, update_flag=False)
-        model_working = load_model("./Data/Modelling/working_tuned_random_forest_regressor")
-        model_weekend = load_model("./Data/Modelling/weekend_tuned_random_forest_regressor")
+        model_working = load_model(os.path.join(path, "Modelling", "working_tuned_random_forest_regressor"))
+        model_weekend = load_model(os.path.join(path, "Modelling", "weekend_tuned_random_forest_regressor"))
 
         predict_stations(df_locations=df_locations, weekend_model=model_weekend, working_model=model_working,
                          min_distance_in_grid=0.2)
 
-        df_working_predicted = pd.read_csv(
-            "./Data/Results/working_locations_predicted.csv", index_col=0)
-        df_weekend_predicted = pd.read_csv(
-            "./Data/Results/weekend_locations_predicted.csv", index_col=0)
+        df_working_predicted = pd.read_csv(os.path.join(path, "Results", "working_locations_predicted.csv"),
+                                           index_col=0)
+        df_weekend_predicted = pd.read_csv(os.path.join(path, "Results", "weekend_locations_predicted.csv"),
+                                           index_col=0)
 
         perform_selection(df_weekend, df_working, df_weekend_predicted, df_working_predicted,
                           nearest_stations_distance=0.357950, n=25)
@@ -170,7 +167,7 @@ def callback(value):
         most_popular_in_periods(path_to_file=bikes_path)
         most_popular_connections(path_to_file=bikes_path)
 
-        file_to_read = open("../New_stations/Data/Statistics/most_popular_in_periods.pickle", "rb")
+        file_to_read = open(os.path.join(path, 'Statistics', 'most_popular_in_periods.pickle'), "rb")
         list_df = pickle.load(file_to_read)
         file_to_read.close()
 
@@ -197,13 +194,13 @@ def callback(value):
                                     fill_opacity=0.9,
                                     ).add_to(hel_map)
 
-            file_name = "../assets/Helsinki_heat_" + str(i) + ".html"
+            file_name = "Helsinki_heat_" + str(i) + ".html"
+            file_path = os.path.join('..', 'assets', file_name)
 
-            hel_map.save(file_name)
+            hel_map.save(file_path)
 
         os.chdir(owd)
 
         print('updating statistics finished')
 
         return ['uploaded']
-    return ['notuploaded']
