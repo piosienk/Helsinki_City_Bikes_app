@@ -25,7 +25,7 @@ from Existing_stations.Functions.Forecast_weather_functions import forecast_weat
 
 forecast_data = forecast_weather_transformation(
         df=pd.read_pickle("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"))
-historical_data = pd.read_csv("../Existing_stations/Data/Time_series/time_series_data_transformed.csv")
+historical_data = pd.read_csv("../Existing_stations/Data/Results/predictions.csv")
 
 layout = html.Div([
     html.Div(id='forecast_value', style={'width': '20vw', 'z-index': '1', 'font-size': "smaller",

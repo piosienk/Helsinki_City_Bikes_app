@@ -3,6 +3,7 @@ import dash
 import dash_leaflet as dl
 from os.path import exists
 from dash import html, dcc, Output, Input
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 from pycaret.regression import *
