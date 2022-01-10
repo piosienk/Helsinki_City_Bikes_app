@@ -64,6 +64,7 @@ layout = html.Div([html.Iframe(id='map', srcDoc=open("../assets/Helsinki_heat_4.
                    dcc.Dropdown(
                        id="dropdown_period",
                        options=[{"label": x, "value": options_list.index(x)} for x in options_list],
+                       clearable=False,
                        value=0,
                        style={'width': '25vw', 'position': 'absolute', 'top': "50%", 'left': '1vw',
                               'background': 'lightgreen'}),

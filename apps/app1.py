@@ -13,7 +13,6 @@ import dash_bootstrap_components as dbc
 
 points = pd.read_csv('../Existing_stations/Data/Results/points.csv')
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
-stations = []
 predictions = pd.read_csv('../Existing_stations/Data/Results/predictions.csv', index_col=0)
 
 if exists("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"):

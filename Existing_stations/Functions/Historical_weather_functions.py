@@ -1,6 +1,5 @@
 import pandas as pd
-import numpy as np
-from datetime import date, timedelta
+from datetime import timedelta
 import os
 import json
 import datetime as dt

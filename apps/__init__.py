@@ -1,16 +1,24 @@
+import sys
+import os
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 
+os.chdir('./apps/')
+sys.path.append('../')
+sys.path.append('../assets')
+sys.path.append('../Existing_stations')
+sys.path.append('../New_stations')
+
 from app import app
-from apps import app1, app2, app3, app4
+import app1, app2, app3, app4
 
 app.layout = html.Div([
     html.H1(id='header-title', children='An application for management of Helsinki City Bikes',
             style={'width': '25vw', 'z-index': '1',
-                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "0vh", 'left': '27vw'}),
+                   'margin-top': '2.5vh', 'position': 'absolute', 'top': "0vh", 'left': '27vw'}),
 
-        dcc.RadioItems(
+    dcc.RadioItems(
             id="app_select",
             options=[
                 {'label': 'Existing Stations', 'value': 'app1'},

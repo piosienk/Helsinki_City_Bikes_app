@@ -91,7 +91,7 @@ def callback(value):
     if value == 'uploaded':
         df = pd.read_csv('../Existing_stations/Data/Time_series/filtered_data.csv')
         df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
-        df[['departure_name', 'departure_latitude', 'departure_longitude']]\
+        df[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates().reset_index(drop=True) \
             .to_csv('../Existing_stations/Data/Results/points.csv')
         prepare_time_series_data(df)
         return ['uploaded']
@@ -132,7 +132,12 @@ def callback(value):
     print(value)
     if value == 'uploaded':
         train_models_and_save_predictions()
+        points = pd.read_csv('../Existing_stations/Data/Results/points.csv')
+        points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
+        predictions = pd.read_csv('../Existing_stations/Data/Results/predictions.csv', index_col=0)
+
         return ['uploaded']
+
     return ['notuploaded']
 
 
@@ -204,3 +209,5 @@ def callback(value):
         print('updating statistics finished')
 
         return ['uploaded']
+
+    return ['notuploaded']
