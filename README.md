@@ -7,7 +7,6 @@ In order to run project, you need to download and copy the following files:
 ../Helsinki_City_Bikes_app/New_stations/Data/Places_data/merged_places_05.txt  
 ../Helsinki_City_Bikes_app/New_stations/Data/Places_data/merged_places_02.txt   
 ../Helsinki_City_Bikes_app/Existing_stations/Data/Models/  
-../Helsinki_City_Bikes_app/Existing_stations/Data/Time_series/time_series_data_transformed.csv  
 
 from:  
 https://drive.google.com/drive/folders/1xomEQm_Wj_J7SOayvRJmPCX6PKDQ36xA?usp=sharing
