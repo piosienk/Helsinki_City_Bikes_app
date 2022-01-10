@@ -10,6 +10,7 @@ import dash_uploader as du
 import folium
 from dash import html, dcc, Output, Input, State
 
+from New_stations.Functions.Data_ETL_functions.Auxillary_module.Aux_functions import check_columns
 from New_stations.Functions.Data_ETL_functions.Locations_module.Locations_set_creation import aggregate_locations_data
 from New_stations.Functions.Data_ETL_functions.Stations_module.Stations_set_creation import aggregate_stations_data
 from New_stations.Functions.Modelling_functions.Select_best_locations import perform_selection
@@ -79,6 +80,7 @@ def callback_on_completion(iscompleted, fileNames):
     if iscompleted:
         print('filtering')
         path_str = os.path.join('.', 'data', fileNames[0])
+        check_columns(path_str)
         df = load_and_filter_data(path_str)
         return ['uploaded']
     return ['notuploaded']

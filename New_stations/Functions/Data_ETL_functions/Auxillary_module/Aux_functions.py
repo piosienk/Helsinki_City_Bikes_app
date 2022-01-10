@@ -1,6 +1,20 @@
 import warnings
 import functools
+import pandas as pd
 
+
+def check_columns(path_to_file):
+    df = pd.read_csv(path_to_file)
+    needed_cols = ['distance (m)', 'duration (sec.)', 'avg_speed (km/h)', 'departure', 'return',
+                   'departure_name', 'return_name', 'departure_latitude', 'departure_longitude',
+                   'return_latitude', 'return_longitude']
+
+    for col in needed_cols:
+        if col in df.columns:
+            continue
+        else:
+            raise ValueError('Needed columns not present in new data')
+    return
 
 def not_used(func):
     """
