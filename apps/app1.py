@@ -3,7 +3,6 @@ import dash
 import dash_leaflet as dl
 from os.path import exists
 from dash import html, dcc, Output, Input
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 from pycaret.regression import *
@@ -11,6 +10,7 @@ from Existing_stations.Functions.Forecast_weather_functions import forecast_weat
     forecast_weather_download
 import dash_bootstrap_components as dbc
 
+value_ft = None
 points = pd.read_csv('../Existing_stations/Data/Results/points.csv')
 points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
 predictions = pd.read_csv('../Existing_stations/Data/Results/predictions.csv', index_col=0)
@@ -103,17 +103,14 @@ def marker_click(*args):
                           yaxis_title="Number of bikes rented")
         if exists("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"):
             df_forecast = forecast_weather_transformation(df=pd.read_pickle("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"))
-            f_min = np.min(df_forecast.date)
-            f_max = np.max(df_forecast.date)
         else:
             df_forecast = None
-            f_min = None
-            f_max = None
         path_to_model = '../Existing_stations/Data/Models/model_for_' + points.iloc[idx].departure_name.replace('/', '-')
         print(path_to_model)
         mdl = load_model(path_to_model)
         preds = predict_model(mdl, data = df_forecast)
         preds.loc[preds.cal_month.isin([1, 2, 3, 11, 12]), 'Label'] = 0
+        preds.loc[preds.Label < 0, 'Label'] = 0
         preds = preds[["date", "Label"]]
         preds.columns = ["date", "Prediction"]
         fig2 = px.line(preds, x='date', y=["Prediction"], template='plotly_dark', color_discrete_sequence=["green"])
@@ -166,7 +163,7 @@ def update_output(n_clicks):
     if n_clicks > 0:
         forecast_weather_transformation(forecast_weather_download())
     df_forecast = forecast_weather_transformation(
-        df=pd.read_pickle("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"))
+            df=pd.read_pickle("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"))
     return 'You have forecast data since {}, to {}'.format(np.min(df_forecast.date), np.max(df_forecast.date))
 
 

@@ -22,18 +22,11 @@ from Existing_stations.Functions.Time_series_functions import load_and_filter_da
 from Existing_stations.Functions.Historical_weather_functions import historical_weather_load,\
     historical_weather_transformations, create_weather_stats
 from Existing_stations.Functions.Modelling_functions import train_models_and_save_predictions
-from Existing_stations.Functions.Forecast_weather_functions import forecast_weather_transformation
 
-forecast_data = forecast_weather_transformation(
-        df=pd.read_pickle("../Existing_stations/Data/Weather/forecast_weather_dict.pickle"))
+
 historical_data = pd.read_csv("../Existing_stations/Data/Results/predictions.csv")
 
 layout = html.Div([
-    html.Div(id='forecast_value', style={'width': '20vw', 'z-index': '1', 'font-size': "smaller",
-                           'margin-top': '2.5vh', 'position': 'absolute', 'top': "50vh", 'left': '2.25vw',
-                   'background-color': 'lightgreen', 'border': '5px solid black', 'border-radius': '5px'},
-             children=[f'You have downloaded weather forecast', html.Br(), f'since {np.min(forecast_data.date)} ',
-                      html.Br(), f' up to {np.max(forecast_data.date)}.']),
     html.Div(id='historical_value',
              children=['You have downloaded historical data', html.Br(), f'since {np.min(historical_data.date)} ',
                        html.Br(), f' up to {np.max(historical_data.date)}.'],
@@ -81,7 +74,7 @@ def callback_on_completion(iscompleted, fileNames):
         print('filtering')
         path_str = os.path.join('.', 'data', fileNames[0])
         check_columns(path_str)
-        df = load_and_filter_data(path_str)
+        #df = load_and_filter_data(path_str)
         return ['uploaded']
     return ['notuploaded']
 
@@ -95,7 +88,7 @@ def callback(value):
         df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
         df[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates().reset_index(drop=True) \
             .to_csv('../Existing_stations/Data/Results/points.csv')
-        prepare_time_series_data(df)
+        #prepare_time_series_data(df)
         return ['uploaded']
 
     return ['notuploaded']
@@ -122,8 +115,8 @@ def callback(value):
     print(value)
     print('preparing final time series')
     if value == 'uploaded':
-        transform_time_series('../Existing_stations/Data/Time_series/time_series_data.csv',
-                              '../Existing_stations/Data/Weather/weather_time_series.csv')
+        # transform_time_series('../Existing_stations/Data/Time_series/time_series_data.csv',
+        #                       '../Existing_stations/Data/Weather/weather_time_series.csv')
         return ['uploaded']
     return ['notuploaded']
 
@@ -133,7 +126,7 @@ def callback(value):
 def callback(value):
     print(value)
     if value == 'uploaded':
-        train_models_and_save_predictions()
+        #train_models_and_save_predictions()
         points = pd.read_csv('../Existing_stations/Data/Results/points.csv')
         points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
         predictions = pd.read_csv('../Existing_stations/Data/Results/predictions.csv', index_col=0)

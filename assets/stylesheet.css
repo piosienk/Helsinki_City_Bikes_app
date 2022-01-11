@@ -51,7 +51,7 @@ H4{
   visibility: hidden;
 }
 *[class="clickdata2-loading"][data-dash-is-loading="true"]::before {
-  content: "Uploaded data is being filtered... (1/5)";
+  content: "Uploaded data is being filtered... (1/6)";
   display: inline-block;
   color: orange;
   visibility: visible;
@@ -64,7 +64,7 @@ H4{
   visibility: hidden;
 }
 *[class="clickdata4-loading"][data-dash-is-loading="true"]::before {
-  content: "Uploaded data is being transformed to time series... (2/5)";
+  content: "Uploaded data is being transformed to time series... (2/6)";
   display: inline-block;
   color: orange;
   visibility: visible;
@@ -76,7 +76,7 @@ H4{
   visibility: hidden;
 }
 *[class="clickdata5-loading"][data-dash-is-loading="true"]::before {
-  content: "Historical weather data is being loadad... (3/5)";
+  content: "Historical weather data is being loadad... (3/6)";
   display: inline-block;
   color: orange;
   visibility: visible;
@@ -88,7 +88,7 @@ H4{
   visibility: hidden;
 }
 *[class="clickdata6-loading"][data-dash-is-loading="true"]::before {
-  content: "Final time series are being prepared... (4/5)";
+  content: "Final time series are being prepared... (4/6)";
   display: inline-block;
   color: orange;
   visibility: visible;
@@ -98,7 +98,17 @@ H4{
   visibility: hidden;
 }
 *[class="clickdata7-loading"][data-dash-is-loading="true"]::before {
-  content: "Models for each station are being trained... (5/5)";
+  content: "Models for each station are being trained... (5/6)";
+  display: inline-block;
+  color: orange;
+  visibility: visible;
+  left: 30%;
+}
+*[class="clickdata7-loading"][data-dash-is-loading="true"] {
+  visibility: hidden;
+}
+*[class="clickdata7-loading"][data-dash-is-loading="true"]::before {
+  content: "Models for new stations are being uploaded... (6/6)";
   display: inline-block;
   color: orange;
   visibility: visible;

@@ -30,22 +30,10 @@ app.layout = html.Div([
             style = {'width': '25vw', 'z-index': '1',
                            'margin-top': '2.5vh', 'position': 'absolute', 'top': "30vh", 'left': '2.25vw'}
         ),
-    #dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ])
 
 
-# @app.callback(Output('page-content', 'children'),
-#               Input('url', 'pathname'))
-# def display_page(pathname):
-#     if pathname == '/apps/app1':
-#         return app1.layout
-#     elif pathname == '/apps/app2':
-#         return app2.layout
-#     elif pathname == '/apps/app3':
-#         return app3.layout
-#     else:
-#         return app1.layout
 
 # change app
 @app.callback(
