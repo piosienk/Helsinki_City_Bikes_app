@@ -74,7 +74,7 @@ def callback_on_completion(iscompleted, fileNames):
         print('filtering')
         path_str = os.path.join('.', 'data', fileNames[0])
         check_columns(path_str)
-        #df = load_and_filter_data(path_str)
+        df = load_and_filter_data(path_str)
         return ['uploaded']
     return ['notuploaded']
 
@@ -88,7 +88,7 @@ def callback(value):
         df[['departure', 'return']] = df[['departure', 'return']].apply(pd.to_datetime, format='%Y-%m-%d %H:%M:%S.%f')
         df[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates().reset_index(drop=True) \
             .to_csv('../Existing_stations/Data/Results/points.csv')
-        #prepare_time_series_data(df)
+        prepare_time_series_data(df)
         return ['uploaded']
 
     return ['notuploaded']
@@ -115,8 +115,8 @@ def callback(value):
     print(value)
     print('preparing final time series')
     if value == 'uploaded':
-        # transform_time_series('../Existing_stations/Data/Time_series/time_series_data.csv',
-        #                       '../Existing_stations/Data/Weather/weather_time_series.csv')
+        transform_time_series('../Existing_stations/Data/Time_series/time_series_data.csv',
+                              '../Existing_stations/Data/Weather/weather_time_series.csv')
         return ['uploaded']
     return ['notuploaded']
 
@@ -126,7 +126,7 @@ def callback(value):
 def callback(value):
     print(value)
     if value == 'uploaded':
-        #train_models_and_save_predictions()
+        train_models_and_save_predictions()
         points = pd.read_csv('../Existing_stations/Data/Results/points.csv')
         points = points[['departure_name', 'departure_latitude', 'departure_longitude']].drop_duplicates()
         predictions = pd.read_csv('../Existing_stations/Data/Results/predictions.csv', index_col=0)
